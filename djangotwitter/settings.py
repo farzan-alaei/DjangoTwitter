@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     # our apps
     "posts",
     "profiles",
+    # third app
+    "compressor",
 ]
 
 MIDDLEWARE = [
@@ -124,3 +126,13 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# compressor settings
+STATICFILES_FINDERS = (
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
+)
+COMPRESS_ENABLE = True
+COMPRESS_ROOT = BASE_DIR / "static"
