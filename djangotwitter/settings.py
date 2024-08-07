@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'DjangoTwitter.urls'
+ROOT_URLCONF = 'djangotwitter.urls'
 
 TEMPLATES = [
     {
