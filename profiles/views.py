@@ -1,3 +1,5 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.views.generic.edit import FormView
 
 from profiles.forms import ProfileForm
@@ -15,3 +17,23 @@ class ProfileView(FormView):
         form.save()
         return super().form_valid(form)
 
+
+class CustomLoginView(LoginView):
+    template_name = "login.html"
+    redirect_authenticated_user = True
+
+    def get_success_url(self):
+        return self.request.GET.get("next", "/")
+
+
+class CustomLogoutView(LoginRequiredMixin, LogoutView):
+    next_page = "profiles:profile"
+    login_url = "profiles:login"
+
+
+class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
+    template_name = "change_password.html"
+    login_url = "profiles:login"
+
+    def get_success_url(self):
+        return self.request.GET.get("next", "/")
