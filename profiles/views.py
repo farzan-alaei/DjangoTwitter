@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.views.generic.edit import FormView
+from django.views.generic import TemplateView
 
 from profiles.forms import ProfileForm
 
@@ -37,3 +38,7 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
 
     def get_success_url(self):
         return self.request.GET.get("next", "/")
+
+
+class IndexView(TemplateView):
+    template_name = "index.html"

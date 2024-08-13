@@ -10,6 +10,7 @@
     <title>Django + Tailwind CSS</title>
 
     {% compress css %}
+        <link rel="stylesheet" href="{% static 'src/flowbite.min.css' %}">
         <link rel="stylesheet"
               href="{% static 'src/output.css' %}">
     {% endcompress %}
@@ -22,6 +23,8 @@
     {% block content %}
     {% endblock content %}
 </div>
+<script src="{% static 'src/flowbite.min.js' %}"></script>
+
 </body>
 
 </html>
