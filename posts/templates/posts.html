@@ -1,8 +1,12 @@
 {% extends "_base.html" %}
 
 {% block content %}
-    <h1>posts</h1>
-    {% for post in posts %}
-        <h2>{{ post.title }}</h2>
-    {% endfor %}
+    {% if not posts %}
+        <h1>No posts</h1>
+    {% else %}
+        <h1>posts</h1>
+        {% for post in posts %}
+            <h2>{{ post.title }}</h2>
+        {% endfor %}
+    {% endif %}
 {% endblock content %}

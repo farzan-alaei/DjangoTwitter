@@ -1,6 +1,6 @@
 from django.urls import path
-from posts.views import PostListView
+from posts.views import UserPostListView
 
 urlpatterns = [
-    path("", PostListView.as_view(), name="posts"),
+    path("my-posts/", UserPostListView.as_view(), name="posts"),
 ]
