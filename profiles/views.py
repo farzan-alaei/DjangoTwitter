@@ -1,24 +1,34 @@
+from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-from django.views.generic.edit import FormView, CreateView
-from django.http import HttpResponseRedirect
+from django.views.generic.edit import UpdateView, CreateView
 
 from profiles.forms import ProfileForm, RegisterForm, LoginForm, ChangePasswordForm
+from profiles.models import Profile
 
 
 # Create your views here.
 
 
-class ProfileView(FormView):
+class ProfileView(LoginRequiredMixin, UpdateView):
+    model = Profile
     template_name = "profile.html"
     form_class = ProfileForm
-    success_url = "/"
+    success_url = reverse_lazy("profiles:profile")
+    login_url = "profiles:login"
+
+    def get_object(self, queryset=None):
+        return Profile.objects.get(user=self.request.user)
 
     def form_valid(self, form):
-        form.save()
+        form.instance.user = self.request.user
+        if form.is_valid():
+            form.save()
+        messages.success(self.request, "Profile updated successfully")
         return super().form_valid(form)
 
 
@@ -40,7 +50,6 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
     template_name = "change_password.html"
     login_url = "profiles:login"
     form_class = ChangePasswordForm
-
 
     def get_success_url(self):
         return self.request.GET.get("next", "/")
