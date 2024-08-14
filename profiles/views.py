@@ -69,5 +69,9 @@ class RegisterView(CreateView):
         username = self.request.POST["username"]
         password = self.request.POST["password1"]
         user = authenticate(username=username, password=password)
-        login(self.request, user)
+        if user is not None:
+            login(self.request, user)
+            messages.success(self.request, "Registration successful")
+        # Create Profile for user after registration
+        Profile.objects.create(user=user)
         return HttpResponseRedirect(self.success_url)
