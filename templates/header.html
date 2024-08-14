@@ -59,6 +59,14 @@
                            lg:text-primary-700"
                            aria-current="page">Home</a>
                     </li>
+                {% if request.user.is_authenticated %}
+                    <li>
+                        <a href="/"
+                           class="block py-2 pr-4 pl-3 justify-center text-primary rounded
+                           lg:p-0 dark:text-white">Dashboard</a>
+                    </li>
+                {% endif %}
+                
                     {% if request.user.is_authenticated and request.user.is_superuser %}
                         <li>
                             <a href="{% url 'admin:index' %}"

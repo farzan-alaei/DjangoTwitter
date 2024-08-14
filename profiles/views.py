@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, CreateView
 from django.http import HttpResponseRedirect
 
-from profiles.forms import ProfileForm, RegisterForm, LoginForm
+from profiles.forms import ProfileForm, RegisterForm, LoginForm, ChangePasswordForm
 
 
 # Create your views here.
@@ -39,6 +39,8 @@ class CustomLogoutView(LoginRequiredMixin, LogoutView):
 class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
     template_name = "change_password.html"
     login_url = "profiles:login"
+    form_class = ChangePasswordForm
+
 
     def get_success_url(self):
         return self.request.GET.get("next", "/")
