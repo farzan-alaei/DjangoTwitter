@@ -9,18 +9,34 @@ from django.contrib.auth.models import User
 from profiles.models import Profile
 
 
-class ProfileForm(forms.ModelForm):
-
-    class Meta:
-        model = Profile
-        fields = ["avatar", "bio", "archived"]
-
-
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["first_name", "last_name", "email"]
 
+
+class ProfileForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=255)
+    last_name = forms.CharField(max_length=255)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        user = self.instance.user
+        if user.first_name:
+            self.fields['first_name'].initial = user.first_name
+        if user.last_name:
+            self.fields['last_name'].initial = user.last_name
+
+    def save(self, commit=True):
+        user = self.instance.user
+        user.first_name = self.cleaned_data["first_name"]
+        user.last_name = self.cleaned_data["last_name"]
+        user.save()
+        return super().save(commit)
+
+    class Meta:
+        model = Profile
+        fields = ["avatar", "bio", "archived"]
 
 class RegisterForm(UserCreationForm):
 
