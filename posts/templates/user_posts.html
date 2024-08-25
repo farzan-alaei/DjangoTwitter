@@ -1,12 +1,49 @@
 {% extends "_base.html" %}
 
 {% block content %}
-    {% if not posts %}
-        <h1>No posts</h1>
-    {% else %}
-        <h1>posts</h1>
-        {% for post in posts %}
-            <h2>{{ post.title }}</h2>
-        {% endfor %}
-    {% endif %}
+    <div class="flex flex-col md:flex-row dark:bg-gray-900 min-h-screen">
+        {% include 'component/dashboard.html' %}
+        <div class="flex flex-col items-center justify-center px-8 py-8 w-full mx-auto space-y-8">
+
+            {% include 'component/messages.html' %}
+            <h1 class="text-3xl text-primary-800">{{ user }}'s Posts</h1>
+
+            <a href="{% url 'index' %}" class="btn btn-primary bg-primary-700 text-white p-2 rounded-lg">Add New Post</a>
+
+            {% if not posts %}
+                <h2 class="text-2xl text-gray-700">No posts available.</h2>
+            {% else %}
+                {% for post in posts %}
+                    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 w-full max-w-3xl">
+                        <h2 class="text-2xl font-bold text-primary-800">{{ post.title }}</h2>
+                        <p class="text-gray-700 dark:text-gray-300 mt-4">{{ post.content }}</p>
+
+                        {% if post.featured_image %}
+                            <div class="mt-4">
+                                <img class="rounded-lg w-full h-auto" src="{{ post.featured_image.url }}" alt="Featured Image">
+                            </div>
+                        {% endif %}
+
+                        {% if post.images.all %}
+                            <div class="flex mt-4 space-x-4">
+                                {% for image in post.images.all %}
+                                    <img class="rounded-lg w-32 h-32 object-cover" src="{{ image.image.url }}" alt="Image">
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="mt-4 flex justify-between items-center">
+                            <div class="flex space-x-4">
+                                <span class="text-gray-700 dark:text-gray-400">{{ post.created_at|date:"F j, Y" }}</span>
+                                <span class="text-gray-700 dark:text-gray-400">• {{ post.comments.count }} Comments</span>
+                                <span class="text-gray-700 dark:text-gray-400">• {{ post.like_set.count }} Likes</span>
+                                <span class="text-gray-700 dark:text-gray-400">• {{ post.dislike_set.count }} Dislikes</span>
+                            </div>
+                            <a href="" class="text-primary-600 dark:text-primary-400">View Post</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
 {% endblock content %}
