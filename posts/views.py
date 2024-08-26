@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from posts.forms import PostForm
 from posts.models import Post
@@ -19,7 +19,7 @@ class UserPostListView(LoginRequiredMixin, ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return Post.objects.filter(archived=False, author=self.request.user).order_by(
+        return Post.objects.filter(author=self.request.user).order_by(
             "-created_at"
         )
 
@@ -65,3 +65,13 @@ class EditPostView(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         messages.success(self.request, "پست شما با موفقیت ویرایش شد")
         return response
+
+
+class DetailPostView(LoginRequiredMixin, DetailView):
+    model = Post
+    template_name = "post_detail.html"
+    context_object_name = "post"
+    login_url = "profiles:login"
+
+    def get_queryset(self):
+        return Post.objects.filter(archived=False, author=self.request.user)
