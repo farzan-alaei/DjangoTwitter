@@ -50,9 +50,11 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
     template_name = "change_password.html"
     login_url = "profiles:login"
     form_class = ChangePasswordForm
+    success_url = reverse_lazy("profiles:change_password")
 
-    def get_success_url(self):
-        return self.request.GET.get("next", "/")
+    def form_valid(self, form):
+        messages.success(self.request, "Password changed successfully")
+        return super().form_valid(form)
 
 
 class IndexView(TemplateView):
