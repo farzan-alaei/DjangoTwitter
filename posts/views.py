@@ -74,4 +74,4 @@ class DetailPostView(LoginRequiredMixin, DetailView):
     login_url = "profiles:login"
 
     def get_queryset(self):
-        return Post.objects.filter(archived=False, author=self.request.user)
+        return Post.objects.filter(author=self.request.user)
