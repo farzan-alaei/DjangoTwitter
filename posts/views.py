@@ -1,6 +1,9 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView
 
+from posts.forms import PostForm
 from posts.models import Post
 from profiles.models import Follow
 
@@ -13,9 +16,12 @@ class UserPostListView(LoginRequiredMixin, ListView):
     template_name = "user_posts.html"
     context_object_name = "posts"
     login_url = "profiles:login"
+    paginate_by = 5
 
     def get_queryset(self):
-        return Post.objects.filter(archived=False, author=self.request.user)
+        return Post.objects.filter(archived=False, author=self.request.user).order_by(
+            "-created_at"
+        )
 
 
 class FollowedUsersPostsListView(LoginRequiredMixin, ListView):
@@ -29,3 +35,17 @@ class FollowedUsersPostsListView(LoginRequiredMixin, ListView):
             "followed", flat=True
         )
         return Post.objects.filter(archived=False, author__in=followed_users)
+
+
+class CreatePostView(LoginRequiredMixin, CreateView):
+    model = Post
+    template_name = "create_post.html"
+    form_class = PostForm
+    login_url = "profiles:login"
+    success_url = reverse_lazy("posts:user_posts")
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        response = super().form_valid(form)
+        messages.success(self.request, "پست شما با موفقیت ایجاد شد")
+        return response
