@@ -14,11 +14,11 @@
             {% else %}
                 {% for post in posts %}
                     <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 w-full max-w-3xl">
-                    
+
                         <h2 class="text-2xl font-bold text-primary-800">{{ post.title }}
                             {% if post.archived %}<span class="text-red-500">[Archived]</span>{% endif %}</h2>
                         <p class="text-gray-700 dark:text-gray-300 mt-4">{{ post.content }}</p>
-                        
+
 
                         {% if post.featured_image %}
                             <div class="mt-4">
@@ -44,10 +44,27 @@
                                 <span class="text-gray-700 dark:text-gray-400">• {{ post.dislike_set.count }} Dislikes</span>
                             </div>
                             <a href="" class="text-primary-600 dark:text-primary-400">View Post</a>
-                            <a href="{% url 'posts:edit_post' post.id %}" class="text-primary-600 dark:text-primary-400">Edit Post</a>
+                            <a href="{% url 'posts:edit_post' post.id %}"
+                               class="text-primary-600 dark:text-primary-400">Edit Post</a>
                         </div>
                     </div>
                 {% endfor %}
+                <div class="pagination">
+                <span class="step-links text-primary-600">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+                    <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+                </div>
             {% endif %}
         </div>
     </div>

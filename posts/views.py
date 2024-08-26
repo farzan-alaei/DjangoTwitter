@@ -16,7 +16,7 @@ class UserPostListView(LoginRequiredMixin, ListView):
     template_name = "user_posts.html"
     context_object_name = "posts"
     login_url = "profiles:login"
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self):
         return Post.objects.filter(author=self.request.user).order_by(
