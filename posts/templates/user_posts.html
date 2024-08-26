@@ -41,6 +41,7 @@
                                 <span class="text-gray-700 dark:text-gray-400">• {{ post.dislike_set.count }} Dislikes</span>
                             </div>
                             <a href="" class="text-primary-600 dark:text-primary-400">View Post</a>
+                            <a href="{% url 'posts:edit_post' post.id %}" class="text-primary-600 dark:text-primary-400">Edit Post</a>
                         </div>
                     </div>
                 {% endfor %}
