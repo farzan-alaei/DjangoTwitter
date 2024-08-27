@@ -75,7 +75,7 @@ class CreatePostView(LoginRequiredMixin, CreateView):
         images = self.request.FILES.getlist("image")
         for image in images:
             Image.objects.create(image=image, post=self.object)
-        messages.success(self.request, "پست شما با موفقیت ایجاد شد")
+        messages.success(self.request, "your post has been created")
         return response
 
 
@@ -93,7 +93,7 @@ class EditPostView(LoginRequiredMixin, UpdateView):
         images = self.request.FILES.getlist("image")
         for image in images:
             Image.objects.create(image=image, post=self.object)
-        messages.success(self.request, "پست شما با موفقیت ویرایش شد")
+        messages.success(self.request, "your post has been updated")
         return response
 
     def get_success_url(self):
