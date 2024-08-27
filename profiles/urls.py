@@ -7,6 +7,8 @@ from profiles.views import (
     ChangePasswordView,
     RegisterView,
     OtherProfileView,
+    FollowView,
+    UnfollowView,
 )
 
 app_name = "profiles"
@@ -18,4 +20,6 @@ urlpatterns = [
     path("logout/", CustomLogoutView.as_view(), name="logout"),
     path("register/", RegisterView.as_view(), name="register"),
     path("change-password/", ChangePasswordView.as_view(), name="change_password"),
+    path("follow/<int:user_id>/", FollowView.as_view(), name="follow"),
+    path("unfollow/<int:user_id>/", UnfollowView.as_view(), name="unfollow"),
 ]

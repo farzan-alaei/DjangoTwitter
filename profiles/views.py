@@ -3,15 +3,16 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy
-from django.views.generic import TemplateView
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy, reverse
+from django.views.generic import TemplateView, View
 from django.views.generic.edit import UpdateView, CreateView
 from django.core.paginator import Paginator
 
 from profiles.forms import ProfileForm, RegisterForm, LoginForm, ChangePasswordForm
-from profiles.models import Profile
+from profiles.models import Profile, Follow
 from posts.models import Post
+from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -34,6 +35,9 @@ class OtherProfileView(TemplateView):
 
         context["profile"] = profile
         context["posts"] = page_obj
+        context["is_following"] = Follow.objects.filter(
+            follower=self.request.user, followed=profile.user
+        ).exists()
         return context
 
 
@@ -100,3 +104,60 @@ class RegisterView(CreateView):
         # Create Profile for user after registration
         Profile.objects.create(user=user)
         return HttpResponseRedirect(self.success_url)
+
+
+class FollowView(LoginRequiredMixin, View):
+    """
+    View for following a user.
+    """
+
+    def post(self, request, user_id):
+        user_to_follow = get_object_or_404(User, id=user_id)
+        profile_to_follow = get_object_or_404(Profile, user=user_to_follow)
+
+        if request.user == user_to_follow:
+            return redirect(
+                reverse_lazy(
+                    "profiles:other_profile", kwargs={"id": profile_to_follow.id}
+                )
+            )
+
+        # Check if the follow relationship already exists
+        if not Follow.objects.filter(
+            follower=request.user, followed=user_to_follow
+        ).exists():
+            Follow.objects.create(follower=request.user, followed=user_to_follow)
+
+        return redirect(
+            reverse_lazy("profiles:other_profile", kwargs={"id": profile_to_follow.id})
+        )
+
+
+class UnfollowView(LoginRequiredMixin, View):
+    """
+    View for unfollowing a user.
+    """
+
+    def post(self, request, user_id):
+        user_to_unfollow = get_object_or_404(User, id=user_id)
+        profile_to_unfollow = get_object_or_404(Profile, user=user_to_unfollow)
+
+        if request.user == user_to_unfollow:
+            return redirect(
+                reverse_lazy(
+                    "profiles:other_profile", kwargs={"id": profile_to_unfollow.id}
+                )
+            )
+
+        # Find and delete the follow relationship
+        follow = Follow.objects.filter(
+            follower=request.user, followed=user_to_unfollow
+        ).first()
+        if follow:
+            follow.delete()
+
+        return redirect(
+            reverse_lazy(
+                "profiles:other_profile", kwargs={"id": profile_to_unfollow.id}
+            )
+        )

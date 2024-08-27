@@ -24,20 +24,23 @@
                     <!-- Follow/Unfollow Button -->
                     {% if request.user.is_authenticated %}
                         {% if not request.user == profile.user %}
-                            <form method="post" action="">
-                                {% csrf_token %}
-                                {% if request.user in profile.followers.all %}
-                                    <button type="submit" name="action" value="unfollow"
+                            {% if is_following %}
+                                <form action="{% url 'profiles:unfollow' profile.user.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit"
                                             class="mt-4 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-900">
                                         Unfollow
                                     </button>
-                                {% else %}
-                                    <button type="submit" name="action" value="follow"
+                                </form>
+                            {% else %}
+                                <form action="{% url 'profiles:follow' profile.user.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit"
                                             class="mt-4 px-4 py-2 bg-primary-700 text-white rounded-lg hover:bg-primary-900">
                                         Follow
                                     </button>
-                                {% endif %}
-                            </form>
+                                </form>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                 </div>
@@ -50,22 +53,24 @@
                     {% for post in posts %}
                         <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
                             {% if post.featured_image %}
-                                <img class="w-24 h-24 object-cover" src="{{ post.featured_image.url }}" alt="post image">
+                                <img class="w-24 h-24 object-cover" src="{{ post.featured_image.url }}"
+                                     alt="post image">
                             {% endif %}
                             <div class="p-4">
                                 <h3 class="text-lg font-semibold text-primary-800">{{ post.title }}</h3>
                                 <p class="text-gray-700 mt-2">{{ post.content|slice:":100" }}...</p>
-                                <a href="{% url 'posts:other_user_detail_post' post.id %}" class="text-primary-700 mt-4 inline-block">Read more</a>
+                                <a href="{% url 'posts:other_user_detail_post' post.id %}"
+                                   class="text-primary-700 mt-4 inline-block">Read more</a>
                             </div>
                         </div>
                     {% empty %}
                         <p>No posts available.</p>
                     {% endfor %}
                 </div>
-        {% if posts %}
-                <!-- Pagination controls -->
-                <div class="flex justify-center mt-8">
-                    <div class="pagination">
+                {% if posts %}
+                    <!-- Pagination controls -->
+                    <div class="flex justify-center mt-8">
+                        <div class="pagination">
                 <span class="step-links text-primary-600">
         {% if posts.has_previous %}
             <a href="?page=1">&laquo; first</a>
@@ -80,9 +85,9 @@
                         <a href="?page={{ posts.paginator.num_pages }}">last &raquo;</a>
                     {% endif %}
                 </span>
+                        </div>
                     </div>
-                </div>
-            {% endif %}
+                {% endif %}
 
             </div>
         </div>
