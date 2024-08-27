@@ -294,9 +294,10 @@ class TagPostsView(ListView):
         context = super().get_context_data(**kwargs)
         tag_id = self.kwargs.get("tag_id")
         context["tag"] = get_object_or_404(Tag, id=tag_id)
-        context["is_following_tag"] = TagFollow.objects.filter(
-            user=self.request.user, tag__id=tag_id
-        ).exists()
+        if self.request.user.is_authenticated:
+            context["is_following_tag"] = TagFollow.objects.filter(
+                user=self.request.user, tag__id=tag_id
+            ).exists()
         return context
 
 
@@ -316,7 +317,7 @@ class HomePagePostsView(ListView):
             ).values_list("tag", flat=True)
             return (
                 Post.objects.filter(archived=False)
-                .filter(Q(author__in=followed_users) | Q(tags__in=followed_tags))
+                .filter(Q(author__in=followed_users) | Q(tags__in=followed_tags) | Q(author=self.request.user))
                 .distinct()
                 .order_by("-created_at")
             )
