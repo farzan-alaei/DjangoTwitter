@@ -14,11 +14,11 @@ from profiles.models import Profile
 # Create your views here.
 
 
-class ProfileView(LoginRequiredMixin, UpdateView):
+class UserProfileView(LoginRequiredMixin, UpdateView):
     model = Profile
     template_name = "profile.html"
     form_class = ProfileForm
-    success_url = reverse_lazy("profiles:profile")
+    success_url = reverse_lazy("profiles:user_profile")
     login_url = "profiles:login"
 
     def get_object(self, queryset=None):
@@ -42,7 +42,7 @@ class CustomLoginView(LoginView):
 
 
 class CustomLogoutView(LoginRequiredMixin, LogoutView):
-    next_page = "profiles:profile"
+    next_page = "profiles:user_profile"
     login_url = "profiles:login"
 
 

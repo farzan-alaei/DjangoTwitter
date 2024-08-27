@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from posts.views import SearchView
 
 from profiles.views import IndexView
 
@@ -28,6 +29,7 @@ urlpatterns = [
     path("profiles/", include("profiles.urls")),
     path('select2/', include('django_select2.urls')),
     path("", IndexView.as_view(), name="index"),
+    path("search/", SearchView.as_view(), name="search"),
 
 ]
 

@@ -44,3 +44,16 @@ class LikeForm(forms.Form):
 
 class DislikeForm(forms.Form):
     post_id = forms.IntegerField(widget=forms.HiddenInput())
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField(
+        label="Search",
+        max_length=255,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search...",
+            }
+        ),
+    )

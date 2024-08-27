@@ -5,8 +5,8 @@
     <div class="overflow-y-auto py-4 px-3 rounded">
         <ul class="space-y-6 m-8 font-medium ">
             <li>
-                <a href="{% url 'profiles:profile' %}"
-                   class="flex items-center p-1 text-gray-900 {% if request.resolver_match.url_name == 'profile' %}bg-gray-200{% endif %}
+                <a href="{% url 'profiles:user_profile' %}"
+                   class="flex items-center p-1 text-gray-900 {% if request.resolver_match.url_name == 'user_profile' %}bg-gray-200{% endif %}
                    rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                     <svg class="w-6 h-6 text-primary-800 dark:text-white" aria-hidden="true"
                          xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"

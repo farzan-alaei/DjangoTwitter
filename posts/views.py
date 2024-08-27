@@ -1,16 +1,52 @@
-from lib2to3.fixes.fix_input import context
-
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
-from django.shortcuts import redirect
-from posts.forms import PostForm
-from posts.models import Post, Image, Like, Dislike
+
+from posts.forms import PostForm, SearchForm
+from posts.models import Post, Image, Like, Dislike, Tag
 from profiles.models import Follow
+from profiles.models import Profile
 
 
 # Create your views here.
+
+
+class SearchView(ListView):
+    template_name = "search_results.html"
+    context_object_name = "search_results"
+
+    def get_queryset(self):
+        return Post.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = SearchForm(self.request.GET or None)
+        query = ""
+        profiles = []
+        posts = []
+        tags = []
+
+        if form.is_valid():
+            query = form.cleaned_data.get("query", "")
+            if query:
+                profiles = Profile.objects.filter(user__username__icontains=query)
+                posts = Post.objects.filter(title__icontains=query)
+                tags = Tag.objects.filter(name__icontains=query)
+
+
+
+        context.update(
+            {
+                "form": form,
+                "query": query,
+                "profiles": profiles,
+                "posts": posts,
+                "tags": tags,
+            }
+        )
+        return context
 
 
 class UserPostListView(LoginRequiredMixin, ListView):
