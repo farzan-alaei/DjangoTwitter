@@ -7,9 +7,11 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import UpdateView, CreateView
+from django.core.paginator import Paginator
 
 from profiles.forms import ProfileForm, RegisterForm, LoginForm, ChangePasswordForm
 from profiles.models import Profile
+from posts.models import Post
 
 
 # Create your views here.
@@ -21,7 +23,17 @@ class OtherProfileView(TemplateView):
         context = super().get_context_data(**kwargs)
         profile_id = self.kwargs.get("id")
         profile = get_object_or_404(Profile, pk=profile_id)
+        posts = Post.objects.filter(author=profile.user, archived=False).order_by(
+            "-created_at", "-updated_at"
+        )
+
+        # Implement pagination
+        paginator = Paginator(posts, 12)  # Show 4 posts per page
+        page_number = self.request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+
         context["profile"] = profile
+        context["posts"] = page_obj
         return context
 
 

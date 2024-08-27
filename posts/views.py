@@ -1,8 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.shortcuts import get_object_or_404
 
 from posts.forms import PostForm, SearchForm
 from posts.models import Post, Image, Like, Dislike, Tag
@@ -57,6 +59,7 @@ class UserPostListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Post.objects.filter(author=self.request.user).order_by("-created_at")
+
 
 
 class FollowedUsersPostsListView(LoginRequiredMixin, ListView):
@@ -161,3 +164,55 @@ class UserDetailPostView(LoginRequiredMixin, DetailView):
                 messages.success(request, "You undisliked this post.")
 
         return redirect("posts:user_detail_post", pk=post.pk)
+
+
+class OtherUserDetailPostView(DetailView):
+    model = Post
+    template_name = "other_detail_post.html"
+    context_object_name = "post"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post_id = self.kwargs.get("pk")
+        post = get_object_or_404(Post, pk=post_id)
+
+        if self.request.user == AnonymousUser:
+            user = self.request.user
+            context["user_liked"] = Like.objects.filter(user=user, post=post).exists()
+            context["user_disliked"] = Dislike.objects.filter(user=user, post=post).exists()
+        context["post"] = post
+        return context
+
+    def post(self, request, *args, **kwargs):
+        post = self.get_object()
+        user = request.user
+
+        if "like" in request.POST:
+            like_exists = Like.objects.filter(user=user, post=post).exists()
+            dislike_exists = Dislike.objects.filter(user=user, post=post).exists()
+
+            if dislike_exists:
+                Dislike.objects.filter(user=user, post=post).delete()
+
+            if not like_exists:
+                Like.objects.create(user=user, post=post)
+                messages.success(request, "You liked this post.")
+            else:
+                Like.objects.filter(user=user, post=post).delete()
+                messages.success(request, "You unliked this post.")
+
+        elif "dislike" in request.POST:
+            dislike_exists = Dislike.objects.filter(user=user, post=post).exists()
+            like_exists = Like.objects.filter(user=user, post=post).exists()
+
+            if like_exists:
+                Like.objects.filter(user=user, post=post).delete()
+
+            if not dislike_exists:
+                Dislike.objects.create(user=user, post=post)
+                messages.success(request, "You disliked this post.")
+            else:
+                Dislike.objects.filter(user=user, post=post).delete()
+                messages.success(request, "You undisliked this post.")
+
+        return redirect("posts:other_user_detail_post", pk=post.pk)

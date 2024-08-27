@@ -1,0 +1,75 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <div class="flex flex-col md:flex-row dark:bg-gray-900 min-h-screen">
+        <div class="flex flex-col items-center justify-center px-8 py-8 w-full mx-auto space-y-8">
+
+            {% include 'component/messages.html' %}
+
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 w-full max-w-3xl">
+
+                <h2 class="text-2xl font-bold text-primary-800">
+                    <a href="{% url "profiles:other_profile" post.author.profile.id %}" class="text-primary-700">
+                        Author: {{ post.author }}
+                    </a></h2>
+
+                <h3 class="mt-4 text-xl font-bold text-gray-600">Title: {{ post.title }}
+                    {% if post.archived %}<span class="text-red-500">[Archived]</span>{% endif %}</h3>
+                <p class="text-gray-700 dark:text-gray-300 mt-4">{{ post.content }}</p>
+
+                {% if post.featured_image %}
+                    <div class="mt-4">
+                        <img class="rounded-lg w-full h-auto" src="{{ post.featured_image.url }}"
+                             alt="Featured Image">
+                    </div>
+                {% endif %}
+
+                {% if post.images.all %}
+                    <div class="flex mt-4 space-x-4">
+                        {% for image in post.images.all %}
+                            <img class="rounded-lg w-32 h-32 object-cover" src="{{ image.image.url }}"
+                                 alt="Image">
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if post.tags.exists %}
+                    <div class="mt-4 flex justify-between items-center">
+                        <div class="flex flex-wrap space-x-4 space-y-2 overflow-x-auto">
+                            <span class="text-gray-700 dark:text-gray-400">Tags:</span>
+                            {% for tag in post.tags.all|dictsort:"name" %}
+                                <span class="text-gray-700 dark:text-gray-400">#{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="mt-4 flex justify-between items-center">
+                    <div class="flex space-x-4">
+                        <span class="text-gray-700 dark:text-gray-400">{{ post.created_at|date:"F j, Y" }}</span>
+                        <span class="text-gray-700 dark:text-gray-400">• {{ post.comments.count }} Comments</span>
+                        <span class="text-gray-700 dark:text-gray-400">• {{ post.like_set.count }} Likes</span>
+                        <span class="text-gray-700 dark:text-gray-400">• {{ post.dislike_set.count }} Dislikes</span>
+                    </div>
+
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <form method="post" action="{% url 'posts:other_user_detail_post' post.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        {% if request.user.is_authenticated %}
+                            <button type="submit" name="like"
+                                    class="btn btn-primary text-gray-700 border rounded-lg border-gray-700 p-0.5 {% if user_liked %}text-red-700{% endif %}">
+                                Like
+                            </button>
+                            <button type="submit" name="dislike"
+                                    class="btn btn-secondary text-gray-700 border rounded-lg border-gray-700 p-0.5 {% if user_disliked %}text-red-700 {% endif %}">
+                                Dislike
+                            </button>
+                        {% else %}
+                            <p>You need to be logged in to like or dislike.</p>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
