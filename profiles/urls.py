@@ -9,6 +9,7 @@ from profiles.views import (
     OtherProfileView,
     FollowView,
     UnfollowView,
+    FollowPageView,
 )
 
 app_name = "profiles"
@@ -22,4 +23,5 @@ urlpatterns = [
     path("change-password/", ChangePasswordView.as_view(), name="change_password"),
     path("follow/<int:user_id>/", FollowView.as_view(), name="follow"),
     path("unfollow/<int:user_id>/", UnfollowView.as_view(), name="unfollow"),
+    path("follow-page/", FollowPageView.as_view(), name="follow_page"),
 ]

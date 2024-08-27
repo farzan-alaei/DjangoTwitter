@@ -5,7 +5,7 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView, View, ListView
 from django.views.generic.edit import UpdateView, CreateView
 from django.core.paginator import Paginator
 
@@ -158,3 +158,28 @@ class UnfollowView(LoginRequiredMixin, View):
                 "profiles:other_profile", kwargs={"id": profile_to_unfollow.id}
             )
         )
+
+
+class FollowPageView(LoginRequiredMixin, ListView):
+    """
+    View for displaying a user's followers and following.
+    """
+
+    template_name = "follow_page.html"
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_id = self.request.user.id
+        user = get_object_or_404(User, id=user_id)
+        context["followers"] = Follow.objects.filter(
+            followed=user, follower__profile__archived=False
+        )
+        context["following"] = Follow.objects.filter(
+            follower=user, followed__profile__archived=False
+        )
+        return context
+
+    def get_queryset(self):
+        # This is needed to avoid errors, but we are actually not using the default queryset.
+        return Follow.objects.none()

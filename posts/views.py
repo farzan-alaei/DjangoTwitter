@@ -62,19 +62,6 @@ class UserPostListView(LoginRequiredMixin, ListView):
         return Post.objects.filter(author=self.request.user).order_by("-created_at")
 
 
-class FollowedUsersPostsListView(LoginRequiredMixin, ListView):
-    model = Post
-    template_name = "followed_user_posts.html"
-    context_object_name = "posts"
-    login_url = "profiles:login"
-
-    def get_queryset(self):
-        followed_users = Follow.objects.filter(follower=self.request.user).values_list(
-            "followed", flat=True
-        )
-        return Post.objects.filter(archived=False, author__in=followed_users)
-
-
 class CreatePostView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = "create_post.html"
@@ -271,7 +258,9 @@ class FollowTagView(LoginRequiredMixin, View):
         if not TagFollow.objects.filter(user=request.user, tag=tag).exists():
             TagFollow.objects.create(user=request.user, tag=tag)
 
-        return HttpResponseRedirect(reverse_lazy("posts:tag_posts", kwargs={"tag_id": tag_id}))
+        return HttpResponseRedirect(
+            reverse_lazy("posts:tag_posts", kwargs={"tag_id": tag_id})
+        )
 
 
 class UnfollowTagView(LoginRequiredMixin, View):
@@ -285,7 +274,9 @@ class UnfollowTagView(LoginRequiredMixin, View):
         if follow:
             follow.delete()
 
-        return HttpResponseRedirect(reverse_lazy("posts:tag_posts", kwargs={"tag_id": tag_id}))
+        return HttpResponseRedirect(
+            reverse_lazy("posts:tag_posts", kwargs={"tag_id": tag_id})
+        )
 
 
 class TagPostsView(ListView):
@@ -295,13 +286,17 @@ class TagPostsView(ListView):
 
     def get_queryset(self):
         tag_id = self.kwargs.get("tag_id")
-        return Post.objects.filter(tags__id=tag_id, archived=False).order_by("-created_at")
+        return Post.objects.filter(tags__id=tag_id, archived=False).order_by(
+            "-created_at"
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         tag_id = self.kwargs.get("tag_id")
-        context['tag'] = get_object_or_404(Tag, id=tag_id)
-        context['is_following_tag'] = TagFollow.objects.filter(user=self.request.user, tag__id=tag_id).exists()
+        context["tag"] = get_object_or_404(Tag, id=tag_id)
+        context["is_following_tag"] = TagFollow.objects.filter(
+            user=self.request.user, tag__id=tag_id
+        ).exists()
         return context
 
 
@@ -313,12 +308,17 @@ class HomePagePostsView(ListView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            followed_users = Follow.objects.filter(follower=self.request.user).values_list('followed', flat=True)
-            followed_tags = TagFollow.objects.filter(user=self.request.user).values_list('tag', flat=True)
-            return Post.objects.filter(
-                archived=False
-            ).filter(
-                Q(author__in=followed_users) | Q(tags__in=followed_tags)
-            ).distinct().order_by("-created_at")
+            followed_users = Follow.objects.filter(
+                follower=self.request.user
+            ).values_list("followed", flat=True)
+            followed_tags = TagFollow.objects.filter(
+                user=self.request.user
+            ).values_list("tag", flat=True)
+            return (
+                Post.objects.filter(archived=False)
+                .filter(Q(author__in=followed_users) | Q(tags__in=followed_tags))
+                .distinct()
+                .order_by("-created_at")
+            )
         else:
             return Post.objects.filter(archived=False).order_by("-created_at")[:10]

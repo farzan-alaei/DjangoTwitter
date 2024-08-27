@@ -7,6 +7,17 @@
         <div class="flex flex-col items-center justify-center px-8 py-8 w-full mx-auto">
             {% include 'component/messages.html' %}
             <h1 class="text-3xl text-primary-800">Hello {{ user }}</h1>
+            <div class="mt-4 text-primary-600 space-x-4">
+                <a href="{% url 'profiles:follow_page' %}"
+                   class="hover:text-primary-500 underline">
+                    followers: {{ user.followers.count }}
+                </a>
+                <span>|</span>
+                <a href="{% url 'profiles:follow_page' %}"
+                   class="hover:text-primary-500 underline">
+                    following: {{ user.following.count }}
+                </a>
+            </div>
             <form class="space-y-4 md:space-y-6 w-3/4" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div>
