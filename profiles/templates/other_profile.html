@@ -47,30 +47,31 @@
             </div>
 
             <!-- Display posts in a grid layout -->
-            <div class="w-full mt-8">
-                <h2 class="text-2xl font-bold mb-4 text-primary-800">Posts</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {% for post in posts %}
-                        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-                            {% if post.featured_image %}
-                                <img class="w-24 h-24 object-cover" src="{{ post.featured_image.url }}"
-                                     alt="post image">
-                            {% endif %}
-                            <div class="p-4">
-                                <h3 class="text-lg font-semibold text-primary-800">{{ post.title }}</h3>
-                                <p class="text-gray-700 mt-2">{{ post.content|slice:":100" }}...</p>
-                                <a href="{% url 'posts:other_user_detail_post' post.id %}"
-                                   class="text-primary-700 mt-4 inline-block">Read more</a>
+            {% if posts %}
+                <div class="w-full mt-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-800">Posts</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {% for post in posts %}
+                            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
+                                {% if post.featured_image %}
+                                    <img class="w-24 h-24 object-cover" src="{{ post.featured_image.url }}"
+                                         alt="post image">
+                                {% endif %}
+                                <div class="p-4">
+                                    <h3 class="text-lg font-semibold text-primary-800">{{ post.title }}</h3>
+                                    <p class="text-gray-700 mt-2">{{ post.content|slice:":100" }}...</p>
+                                    <a href="{% url 'posts:other_user_detail_post' post.id %}"
+                                       class="text-primary-700 mt-4 inline-block">Read more</a>
+                                </div>
                             </div>
-                        </div>
-                    {% empty %}
-                        <p>No posts available.</p>
-                    {% endfor %}
-                </div>
-                {% if posts %}
-                    <!-- Pagination controls -->
-                    <div class="flex justify-center mt-8">
-                        <div class="pagination">
+                        {% empty %}
+                            <p>No posts available.</p>
+                        {% endfor %}
+                    </div>
+                    {% if posts %}
+                        <!-- Pagination controls -->
+                        <div class="flex justify-center mt-8">
+                            <div class="pagination">
                 <span class="step-links text-primary-600">
         {% if posts.has_previous %}
             <a href="?page=1">&laquo; first</a>
@@ -85,11 +86,12 @@
                         <a href="?page={{ posts.paginator.num_pages }}">last &raquo;</a>
                     {% endif %}
                 </span>
+                            </div>
                         </div>
-                    </div>
-                {% endif %}
+                    {% endif %}
 
-            </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock content %}
