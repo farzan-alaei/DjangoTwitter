@@ -58,7 +58,7 @@
                 <ul class="space-y-4">
                     {% for tag in tags %}
                         <li class="p-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
-                            <a href="" class="text-primary-600 hover:text-primary-800 font-medium text-lg">
+                            <a href="{% url 'posts:tag_posts' tag.id %}" class="text-primary-600 hover:text-primary-800 font-medium text-lg">
                                 {{ tag.name }}
                             </a>
                         </li>
