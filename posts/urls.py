@@ -8,6 +8,7 @@ from posts.views import (
     TagPostsView,
     UnfollowTagView,
     FollowTagView,
+    TagFollowListView,
 )
 
 app_name = "posts"
@@ -24,6 +25,7 @@ urlpatterns = [
         OtherUserDetailPostView.as_view(),
         name="other_user_detail_post",
     ),
+    path("tag-list/", TagFollowListView.as_view(), name="tag_list"),
     path('tag/<int:tag_id>/', TagPostsView.as_view(), name="tag_posts"),
     path("follow-tag/<int:tag_id>/", FollowTagView.as_view(), name="follow_tag"),
     path("unfollow-tag/<int:tag_id>/", UnfollowTagView.as_view(), name="unfollow_tag")

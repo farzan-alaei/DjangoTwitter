@@ -322,3 +322,13 @@ class HomePagePostsView(ListView):
             )
         else:
             return Post.objects.filter(archived=False).order_by("-created_at")[:10]
+
+
+class TagFollowListView(ListView):
+    model = Tag
+    template_name = "tag_list.html"
+    context_object_name = "tags"
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Tag.objects.filter(followers__user=self.request.user)
