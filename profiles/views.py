@@ -85,10 +85,6 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
         return super().form_valid(form)
 
 
-class IndexView(TemplateView):
-    template_name = "index.html"
-
-
 class RegisterView(CreateView):
     template_name = "register.html"
     form_class = RegisterForm

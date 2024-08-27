@@ -1,0 +1,100 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+    <div class="flex flex-col md:flex-row dark:bg-gray-900 min-h-screen">
+        <div class="flex flex-col items-center justify-center px-8 py-8 w-full mx-auto space-y-8">
+            {% include 'component/messages.html' %}
+
+            {% if not posts %}
+                <h2 class="text-2xl text-gray-700">No posts available.</h2>
+            {% else %}
+                {% for post in posts %}
+                    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 w-full max-w-3xl">
+
+                        <h2 class="text-2xl font-bold text-primary-800">{{ post.title }}
+                            {% if post.archived %}<span class="text-red-500">[Archived]</span>{% endif %}</h2>
+                        <p class="text-gray-700 dark:text-gray-300 mt-4">{{ post.content }}</p>
+
+
+                        {% if post.featured_image %}
+                            <div class="mt-4">
+                                <img class="rounded-lg w-full h-auto" src="{{ post.featured_image.url }}"
+                                     alt="Featured Image">
+                            </div>
+                        {% endif %}
+
+                        {% if post.images.all %}
+                            <div class="flex mt-4 space-x-4">
+                                {% for image in post.images.all %}
+                                    <img class="rounded-lg w-32 h-32 object-cover" src="{{ image.image.url }}"
+                                         alt="Image">
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="mt-4 flex justify-between items-center">
+                            <div class="flex space-x-4">
+                                <span class="text-gray-700 dark:text-gray-400">{{ post.created_at|date:"F j, Y" }}</span>
+                                <span class="text-gray-700 dark:text-gray-400">• {{ post.comments.count }} Comments</span>
+                                <span class="text-gray-700 dark:text-gray-400">• {{ post.like_set.count }} Likes</span>
+                                <span class="text-gray-700 dark:text-gray-400">• {{ post.dislike_set.count }} Dislikes</span>
+                            </div>
+                            <a href="{% url 'posts:other_user_detail_post' post.id %}"
+                               class="text-primary-600 dark:text-primary-400">View Post</a>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="pagination">
+                <span class="step-links text-primary-600">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+                    <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if not request.user.is_authenticated %}
+        <div class="flex flex-col items-center justify-center px-8 py-8 mx-auto">
+            <div class="flex flex-col items-center bg-white border border-gray-200 rounded-lg 
+           shadow md:flex-row md:space-x-4 md:items-center hover:bg-primary-100">
+                <img class="object-cover w-full rounded-t-lg h-96 
+                sm:w-32 sm:h-32 md:w-48 md:h-48 lg:w-64 lg:h-64"
+                     src="{% static 'images/logo.png' %}" alt="">
+                <div class="flex flex-col justify-between p-4 leading-normal">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Django Twitter</h5>
+                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Welcome to django twitter project , for
+                        more info please log in</p>
+                </div>
+            </div>
+
+
+            <a href="{% url 'profiles:login' %}" class="inline-flex items-center mt-8 px-4 py-3 text-sm font-medium text-center 
+        text-white bg-primary-700 rounded-lg hover:bg-blue-600 focus:ring-4 focus:outline-none 
+        focus:ring-blue-300">
+                Log In
+                <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                     fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </a>
+        </div>
+    {% endif %}
+
+
+
+
+{% endblock content %}

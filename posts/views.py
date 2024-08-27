@@ -4,6 +4,7 @@ from django.shortcuts import redirect, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, View
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from posts.forms import PostForm, SearchForm, CommentForm
 from posts.models import Post, Image, Like, Dislike, Tag, Comment, TagFollow
@@ -302,3 +303,22 @@ class TagPostsView(ListView):
         context['tag'] = get_object_or_404(Tag, id=tag_id)
         context['is_following_tag'] = TagFollow.objects.filter(user=self.request.user, tag__id=tag_id).exists()
         return context
+
+
+class HomePagePostsView(ListView):
+    model = Post
+    template_name = "index.html"
+    context_object_name = "posts"
+    paginate_by = 10
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            followed_users = Follow.objects.filter(follower=self.request.user).values_list('followed', flat=True)
+            followed_tags = TagFollow.objects.filter(user=self.request.user).values_list('tag', flat=True)
+            return Post.objects.filter(
+                archived=False
+            ).filter(
+                Q(author__in=followed_users) | Q(tags__in=followed_tags)
+            ).distinct().order_by("-created_at")
+        else:
+            return Post.objects.filter(archived=False).order_by("-created_at")[:10]
