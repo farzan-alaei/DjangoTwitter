@@ -2,51 +2,71 @@
 {% extends "_base.html" %}
 
 {% block content %}
-    <div class="flex flex-col items-center px-8 py-8 w-full mx-auto">
-        <h1 class="text-3xl font-bold mb-6">Search Results for "{{ query }}"</h1>
+    <div class="flex flex-col items-center px-8 py-8 w-full mx-auto max-w-4xl">
+        <h1 class="text-4xl font-extrabold text-primary-800 mb-8">Search Results for "{{ query }}"</h1>
 
-        <h2 class="text-2xl font-semibold mb-4">Profiles</h2>
-        {% if profiles %}
-            <ul>
-                {% for profile in profiles %}
-                    <li class="mb-2">
-                        <a href="{% url "profiles:other_profile" profile.id %}" class="text-primary-700">
-                            {{ profile.user.username }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No profiles found.</p>
-        {% endif %}
+        <!-- Profiles Section -->
+        <section class="w-full mb-12 mt-4">
+            <h2 class="text-3xl font-semibold text-primary-700 mb-6">Profiles</h2>
+            {% if profiles %}
+                <ul class="space-y-4">
+                    {% for profile in profiles %}
+                        <li class="p-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
+                            <a href="{% url 'profiles:other_profile' profile.id %}" class="text-primary-600 hover:text-primary-800 font-medium text-lg">
+                                {{ profile.user.username }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-600">No profiles found.</p>
+            {% endif %}
+        </section>
 
-        <h2 class="text-2xl font-semibold mt-8 mb-4">Posts</h2>
-        {% if posts %}
-            <ul>
-                {% for post in posts %}
-                    <li class="mb-2">
-                        <a href="" class="text-primary-700">
-                            {{ post.title }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No posts found.</p>
-        {% endif %}
-    <h2 class="text-2xl font-semibold mt-8 mb-4">Tags</h2>
-        {% if tags %}
-            <ul>
-                {% for tag in tags %}
-                    <li class="mb-2">
-                        <a href="" class="text-primary-700">
-                            {{ tag.name }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No tags found.</p>
-        {% endif %}
+        <!-- Posts Section -->
+        <section class="w-full mb-12 mt-4">
+            <h2 class="text-3xl font-semibold text-primary-700 mb-6">Posts</h2>
+            {% if posts %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    {% for post in posts %}
+                        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                            <!-- Image -->
+                            {% if post.featured_image %}
+                                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-48 object-cover">
+                            {% endif %}
+                            <!-- Content -->
+                            <div class="p-4">
+                                <a href="{% url 'posts:other_user_detail_post' post.id %}" class="text-primary-600 hover:text-primary-800 font-semibold text-lg">
+                                    {{ post.title }}
+                                </a>
+                                <p class="text-gray-600 mt-2">
+                                    {{ post.content|slice:":100" }}...
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-600">No posts found.</p>
+            {% endif %}
+        </section>
+
+        <!-- Tags Section -->
+        <section class="w-full mt-4">
+            <h2 class="text-3xl font-semibold text-primary-700 mb-6">Tags</h2>
+            {% if tags %}
+                <ul class="space-y-4">
+                    {% for tag in tags %}
+                        <li class="p-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
+                            <a href="" class="text-primary-600 hover:text-primary-800 font-medium text-lg">
+                                {{ tag.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-600">No tags found.</p>
+            {% endif %}
+        </section>
     </div>
 {% endblock %}
