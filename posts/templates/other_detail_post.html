@@ -1,4 +1,5 @@
 {% extends "_base.html" %}
+{% load form_filters %}
 
 {% block content %}
     <div class="flex flex-col md:flex-row dark:bg-gray-900 min-h-screen">
@@ -69,6 +70,26 @@
                         {% endif %}
                     </form>
                 </div>
+            <div class="mt-4 mb-4 flex justify-between items-center">
+                    {% if request.user.is_authenticated %}
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            {{ comment_form.content|add_classes:"bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" }}
+                            <button name="comment" class="btn btn-primary text-white p-2 m-4 rounded-lg bg-primary-700">Add Comment
+                            </button>
+                        </form>
+                    {% else %}
+                        <p>You must be logged in to comment.</p>
+                    {% endif %}
+                </div>
+            {% if comments %}
+                <h2 class="mb-4 text-2xl font-bold text-primary-800">Comments</h2>
+                <div class="comments">
+                    {% for comment in comments %}
+                        {% include 'component/comment.html' with comment=comment %}
+                    {% endfor %}
+                </div>
+            {% endif %}
             </div>
         </div>
     </div>

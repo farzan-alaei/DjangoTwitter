@@ -6,13 +6,14 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from django.shortcuts import get_object_or_404
 
-from posts.forms import PostForm, SearchForm
-from posts.models import Post, Image, Like, Dislike, Tag
+from posts.forms import PostForm, SearchForm, CommentForm
+from posts.models import Post, Image, Like, Dislike, Tag, Comment
 from profiles.models import Follow
 from profiles.models import Profile
 
 
 # Create your views here.
+
 
 class SearchView(ListView):
     template_name = "search_results.html"
@@ -32,11 +33,11 @@ class SearchView(ListView):
         if form.is_valid():
             query = form.cleaned_data.get("query", "")
             if query:
-                profiles = Profile.objects.filter(user__username__icontains=query, archived=False)
+                profiles = Profile.objects.filter(
+                    user__username__icontains=query, archived=False
+                )
                 posts = Post.objects.filter(title__icontains=query, archived=False)
                 tags = Tag.objects.filter(name__icontains=query)
-
-
 
         context.update(
             {
@@ -59,7 +60,6 @@ class UserPostListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Post.objects.filter(author=self.request.user).order_by("-created_at")
-
 
 
 class FollowedUsersPostsListView(LoginRequiredMixin, ListView):
@@ -127,6 +127,12 @@ class UserDetailPostView(LoginRequiredMixin, DetailView):
         user = self.request.user
         post = self.get_object()
 
+        comments = Comment.objects.filter(post=post, parent=None).order_by(
+            "-created_at"
+        )
+        context["comments"] = comments
+        context["comment_form"] = CommentForm()
+
         context["user_liked"] = Like.objects.filter(user=user, post=post).exists()
         context["user_disliked"] = Dislike.objects.filter(user=user, post=post).exists()
         return context
@@ -162,7 +168,20 @@ class UserDetailPostView(LoginRequiredMixin, DetailView):
             else:
                 Dislike.objects.filter(user=user, post=post).delete()
                 messages.success(request, "You undisliked this post.")
-
+        elif "comment" in request.POST:
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)
+                comment.author = user
+                comment.post = post
+                parent_id = request.POST.get("parent_id")
+                if parent_id:
+                    parent_comment = Comment.objects.get(id=parent_id)
+                    comment.parent = parent_comment
+                comment.save()
+                messages.success(request, "Your comment was added successfully.")
+            else:
+                messages.error(request, "There was an error adding your comment.")
         return redirect("posts:user_detail_post", pk=post.pk)
 
 
@@ -176,10 +195,18 @@ class OtherUserDetailPostView(DetailView):
         post_id = self.kwargs.get("pk")
         post = get_object_or_404(Post, pk=post_id)
 
-        if self.request.user == AnonymousUser:
+        comments = Comment.objects.filter(post=post, parent=None).order_by(
+            "-created_at"
+        )
+        context["comments"] = comments
+        context["comment_form"] = CommentForm()
+
+        if self.request.user.is_authenticated:
             user = self.request.user
             context["user_liked"] = Like.objects.filter(user=user, post=post).exists()
-            context["user_disliked"] = Dislike.objects.filter(user=user, post=post).exists()
+            context["user_disliked"] = Dislike.objects.filter(
+                user=user, post=post
+            ).exists()
         context["post"] = post
         return context
 
@@ -214,5 +241,20 @@ class OtherUserDetailPostView(DetailView):
             else:
                 Dislike.objects.filter(user=user, post=post).delete()
                 messages.success(request, "You undisliked this post.")
+
+        elif "comment" in request.POST:
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)
+                comment.author = user
+                comment.post = post
+                parent_id = request.POST.get("parent_id")
+                if parent_id:
+                    parent_comment = Comment.objects.get(id=parent_id)
+                    comment.parent = parent_comment
+                comment.save()
+                messages.success(request, "Your comment was added successfully.")
+            else:
+                messages.error(request, "There was an error adding your comment.")
 
         return redirect("posts:other_user_detail_post", pk=post.pk)

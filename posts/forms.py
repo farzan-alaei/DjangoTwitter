@@ -1,7 +1,19 @@
 from django import forms
 from django_select2.forms import ModelSelect2TagWidget
 
-from posts.models import Post, Image, Tag
+from posts.models import Post, Image, Tag, Comment
+
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ["content"]
+        widgets = {
+            "content": forms.Textarea(
+                attrs={"rows": 2, "placeholder": "Write a comment..."}
+            ),
+        }
 
 
 class TagWidget(ModelSelect2TagWidget):
