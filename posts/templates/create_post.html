@@ -38,6 +38,12 @@
                            for="{{ form.archived.id_for_label }}">{{ form.archived.label }}</label>
                     <div class="m-2">{{ form.archived }}</div>
                 </div>
+                <div>
+                    <label class="block text-primary-600"
+                           for="image">Post Gallery</label>
+                    <input type="file" name="image" multiple accept="image/*">
+                </div>
+                
                 <button class="btn btn-primary text-white p-3 m-3 rounded-lg bg-primary-700" type="submit">Create
                 </button>
             </form>

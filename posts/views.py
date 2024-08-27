@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from posts.forms import PostForm
-from posts.models import Post
+from posts.models import Post, Image
 from profiles.models import Follow
 
 
@@ -47,6 +47,9 @@ class CreatePostView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         response = super().form_valid(form)
+        images = self.request.FILES.getlist("image")
+        for image in images:
+            Image.objects.create(image=image, post=self.object)
         messages.success(self.request, "پست شما با موفقیت ایجاد شد")
         return response
 
@@ -63,6 +66,9 @@ class EditPostView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
+        images = self.request.FILES.getlist("image")
+        for image in images:
+            Image.objects.create(image=image, post=self.object)
         messages.success(self.request, "پست شما با موفقیت ویرایش شد")
         return response
 
