@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import UpdateView, CreateView
@@ -12,6 +13,16 @@ from profiles.models import Profile
 
 
 # Create your views here.
+class OtherProfileView(TemplateView):
+    template_name = "other_profile.html"
+    model = Profile
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile_id = self.kwargs.get("id")
+        profile = get_object_or_404(Profile, pk=profile_id)
+        context["profile"] = profile
+        return context
 
 
 class UserProfileView(LoginRequiredMixin, UpdateView):

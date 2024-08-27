@@ -1,0 +1,44 @@
+{% extends "_base.html" %}
+{% load form_filters %}
+
+{% block content %}
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <div class="flex flex-col items-center justify-center px-8 py-8 w-full mx-auto max-w-4xl">
+            {% include 'component/messages.html' %}
+
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 mb-8 w-full">
+                <div class="flex flex-col items-center">
+                    <!-- Avatar -->
+                    {% if profile.avatar %}
+                        <div class="mb-4">
+                            <img class="rounded-full w-64 h-64 object-cover border-4 border-primary-700 shadow-lg" src="{{ profile.avatar.url }}" alt="avatar">
+                        </div>
+                    {% endif %}
+
+                    <!-- Profile Info -->
+                    <h1 class="text-3xl font-bold text-primary-800">{{ profile.user.get_full_name }}</h1>
+                    <span class="mt-4 text-gray-700 text-3xl">Bio:</span>
+                    <p class="mt-4 text-lg text-gray-700">{{ profile.bio }}</p>
+                    
+                    <!-- Follow/Unfollow Button -->
+                    {% if request.user.is_authenticated %}
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            {% if request.user in profile.followers.all %}
+                                <button type="submit" name="action" value="unfollow"
+                                        class="mt-4 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-900">
+                                    Unfollow
+                                </button>
+                            {% else %}
+                                <button type="submit" name="action" value="follow"
+                                        class="mt-4 px-4 py-2 bg-primary-700 text-white rounded-lg hover:bg-primary-900">
+                                    Follow
+                                </button>
+                            {% endif %}
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -12,7 +12,6 @@ from profiles.models import Profile
 
 # Create your views here.
 
-
 class SearchView(ListView):
     template_name = "search_results.html"
     context_object_name = "search_results"
@@ -31,8 +30,8 @@ class SearchView(ListView):
         if form.is_valid():
             query = form.cleaned_data.get("query", "")
             if query:
-                profiles = Profile.objects.filter(user__username__icontains=query)
-                posts = Post.objects.filter(title__icontains=query)
+                profiles = Profile.objects.filter(user__username__icontains=query, archived=False)
+                posts = Post.objects.filter(title__icontains=query, archived=False)
                 tags = Tag.objects.filter(name__icontains=query)
 
 

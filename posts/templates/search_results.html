@@ -10,7 +10,7 @@
             <ul>
                 {% for profile in profiles %}
                     <li class="mb-2">
-                        <a href="" class="text-primary-700">
+                        <a href="{% url "profiles:other_profile" profile.id %}" class="text-primary-700">
                             {{ profile.user.username }}
                         </a>
                     </li>
