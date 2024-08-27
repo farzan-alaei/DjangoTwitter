@@ -36,3 +36,11 @@ class PostForm(forms.ModelForm):
                 search_fields=["name__icontains"],
             )
         }
+
+
+class LikeForm(forms.Form):
+    post_id = forms.IntegerField(widget=forms.HiddenInput())
+
+
+class DislikeForm(forms.Form):
+    post_id = forms.IntegerField(widget=forms.HiddenInput())

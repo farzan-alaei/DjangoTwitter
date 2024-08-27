@@ -4,7 +4,7 @@ from posts.views import (
     FollowedUsersPostsListView,
     CreatePostView,
     EditPostView,
-    DetailPostView,
+    UserDetailPostView,
 )
 
 app_name = "posts"
@@ -16,5 +16,5 @@ urlpatterns = [
     ),
     path("create-post/", CreatePostView.as_view(), name="create_post"),
     path("edit-post/<int:pk>/", EditPostView.as_view(), name="edit_post"),
-    path("detail-post/<int:pk>/", DetailPostView.as_view(), name="detail_post"),
+    path("detail-post/<int:pk>/", UserDetailPostView.as_view(), name="user_detail_post"),
 ]

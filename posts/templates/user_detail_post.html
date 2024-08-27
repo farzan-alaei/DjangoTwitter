@@ -48,6 +48,24 @@
                     <a href="{% url 'posts:edit_post' post.id %}"
                        class="text-primary-600 dark:text-primary-400">Edit Post</a>
                 </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <form method="post" action="{% url 'posts:user_detail_post' post.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        {% if request.user.is_authenticated %}
+                            <button type="submit" name="like"
+                                    class="btn btn-primary text-gray-700 border rounded-lg border-gray-700 p-0.5 {% if user_liked %}text-red-700{% endif %}">
+                                Like
+                            </button>
+                            <button type="submit" name="dislike"
+                                    class="btn btn-secondary text-gray-700 border rounded-lg border-gray-700 p-0.5 {% if user_disliked %}text-red-700 {% endif %}">
+                                Dislike
+                            </button>
+                        {% else %}
+                            <p>You need to be logged in to like or dislike.</p>
+                        {% endif %}
+                    </form>
+                </div>
             </div>
         </div>
     </div>
