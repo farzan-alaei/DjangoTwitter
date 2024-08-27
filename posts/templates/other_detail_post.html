@@ -46,7 +46,7 @@
                 <div class="mt-4 flex justify-between items-center">
                     <div class="flex space-x-4">
                         <span class="text-gray-700 dark:text-gray-400">{{ post.created_at|date:"F j, Y" }}</span>
-                        <span class="text-gray-700 dark:text-gray-400">• {{ post.comments.count }} Comments</span>
+                        <span class="text-gray-700 dark:text-gray-400">• {{ post.comment_set.count }} Comments</span>
                         <span class="text-gray-700 dark:text-gray-400">• {{ post.like_set.count }} Likes</span>
                         <span class="text-gray-700 dark:text-gray-400">• {{ post.dislike_set.count }} Dislikes</span>
                     </div>
