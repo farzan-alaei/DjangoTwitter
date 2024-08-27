@@ -26,7 +26,9 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("posts/", include("posts.urls")),
     path("profiles/", include("profiles.urls")),
+    path('select2/', include('django_select2.urls')),
     path("", IndexView.as_view(), name="index"),
+
 ]
 
 if settings.DEBUG:

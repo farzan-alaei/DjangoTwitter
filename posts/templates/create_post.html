@@ -9,6 +9,7 @@
 
             {% include 'component/messages.html' %}
             <h1 class="text-3xl text-primary-800">Create Posts</h1>
+            {{ form.media.css }}
 
             <form class="space-y-4 md:space-y-6 w-3/4" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -30,7 +31,7 @@
                 <div>
                     <label class="block text-primary-600"
                            for="{{ form.tags.id_for_label }}">{{ form.tags.label }}</label>
-                    <div class="m-2">{{ form.tags|add_classes:"bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-1/2 p-2.5"  }}</div>
+                    <div class="m-2">{{ form.tags|add_classes:"bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-1/2 p-2.5" }}</div>
                 </div>
                 <div>
                     <label class="block text-primary-600"
@@ -42,4 +43,7 @@
             </form>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {{ form.media.js }}
 {% endblock content %}
