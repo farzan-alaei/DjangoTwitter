@@ -66,3 +66,13 @@ class Tag(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+
+class TagFollow(models.Model):
+    user = models.ForeignKey(User, related_name="tag_follows", on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, related_name="followers", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user} follows {self.tag}"

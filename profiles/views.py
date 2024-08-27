@@ -35,9 +35,10 @@ class OtherProfileView(TemplateView):
 
         context["profile"] = profile
         context["posts"] = page_obj
-        context["is_following"] = Follow.objects.filter(
-            follower=self.request.user, followed=profile.user
-        ).exists()
+        if self.request.user.is_authenticated:
+            context["is_following"] = Follow.objects.filter(
+                follower=self.request.user, followed=profile.user
+            ).exists()
         return context
 
 

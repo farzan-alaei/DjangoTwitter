@@ -1,13 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import AnonymousUser
-from django.shortcuts import redirect
+from django.shortcuts import redirect, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, View
 from django.shortcuts import get_object_or_404
 
 from posts.forms import PostForm, SearchForm, CommentForm
-from posts.models import Post, Image, Like, Dislike, Tag, Comment
+from posts.models import Post, Image, Like, Dislike, Tag, Comment, TagFollow
 from profiles.models import Follow
 from profiles.models import Profile
 
@@ -258,3 +257,48 @@ class OtherUserDetailPostView(DetailView):
                 messages.error(request, "There was an error adding your comment.")
 
         return redirect("posts:other_user_detail_post", pk=post.pk)
+
+
+class FollowTagView(LoginRequiredMixin, View):
+    """
+    View for following a tag.
+    """
+
+    def post(self, request, tag_id):
+        tag = get_object_or_404(Tag, id=tag_id)
+
+        if not TagFollow.objects.filter(user=request.user, tag=tag).exists():
+            TagFollow.objects.create(user=request.user, tag=tag)
+
+        return HttpResponseRedirect(reverse_lazy("posts:tag_posts", kwargs={"tag_id": tag_id}))
+
+
+class UnfollowTagView(LoginRequiredMixin, View):
+    """
+    View for unfollowing a tag.
+    """
+
+    def post(self, request, tag_id):
+        tag = get_object_or_404(Tag, id=tag_id)
+        follow = TagFollow.objects.filter(user=request.user, tag=tag).first()
+        if follow:
+            follow.delete()
+
+        return HttpResponseRedirect(reverse_lazy("posts:tag_posts", kwargs={"tag_id": tag_id}))
+
+
+class TagPostsView(ListView):
+    model = Post
+    template_name = "tag_posts.html"
+    context_object_name = "posts"
+
+    def get_queryset(self):
+        tag_id = self.kwargs.get("tag_id")
+        return Post.objects.filter(tags__id=tag_id, archived=False).order_by("-created_at")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag_id = self.kwargs.get("tag_id")
+        context['tag'] = get_object_or_404(Tag, id=tag_id)
+        context['is_following_tag'] = TagFollow.objects.filter(user=self.request.user, tag__id=tag_id).exists()
+        return context

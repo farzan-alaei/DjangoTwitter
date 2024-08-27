@@ -1,8 +1,7 @@
 from django.contrib import admin
-from posts.models import Post, Image, Like, Dislike, Comment, Tag
+from posts.models import Post, Image, Like, Dislike, Comment, Tag, TagFollow
 
 # Register your models here.
-
 
 
 class ImageInline(admin.TabularInline):
@@ -22,3 +21,4 @@ admin.site.register(Like)
 admin.site.register(Dislike)
 admin.site.register(Comment)
 admin.site.register(Tag)
+admin.site.register(TagFollow)
