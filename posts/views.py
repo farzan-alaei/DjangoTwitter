@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from posts.forms import PostForm
@@ -59,7 +59,7 @@ class EditPostView(LoginRequiredMixin, UpdateView):
     template_name = "edit_post.html"
     form_class = PostForm
     login_url = "profiles:login"
-    success_url = reverse_lazy("posts:user_posts")
+
 
     def get_queryset(self):
         return Post.objects.filter(author=self.request.user)
@@ -71,6 +71,9 @@ class EditPostView(LoginRequiredMixin, UpdateView):
             Image.objects.create(image=image, post=self.object)
         messages.success(self.request, "پست شما با موفقیت ویرایش شد")
         return response
+
+    def get_success_url(self):
+        return reverse('posts:detail_post', kwargs={'pk': self.object.pk})
 
 
 class DetailPostView(LoginRequiredMixin, DetailView):
