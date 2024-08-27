@@ -21,14 +21,14 @@ from django.contrib import admin
 from django.urls import path, include
 from posts.views import SearchView
 
-from posts.views import HomePagePostsView
+from posts.views import TimeLineView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("posts/", include("posts.urls")),
     path("profiles/", include("profiles.urls")),
     path('select2/', include('django_select2.urls')),
-    path("", HomePagePostsView.as_view(), name="index"),
+    path("", TimeLineView.as_view(), name="timeline"),
     path("search/", SearchView.as_view(), name="search"),
 
 ]

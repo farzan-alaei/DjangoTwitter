@@ -55,8 +55,8 @@
                     <li>
                         <a href="/"
                            class="block py-2 pr-4 pl-3 ml-8 justify-center text-primary rounded lg:p-0 dark:text-white
-                           {% if request.resolver_match.url_name == 'index' %}text-white bg-primary-700 lg:bg-transparent lg:text-primary-700{% endif %}"
-                           aria-current="page">Home</a>
+                           {% if request.resolver_match.url_name == 'timeline' %}text-white bg-primary-700 lg:bg-transparent lg:text-primary-700{% endif %}"
+                           aria-current="page">TimeLine</a>
                     </li>
                     {% if request.user.is_authenticated %}
                         <li>

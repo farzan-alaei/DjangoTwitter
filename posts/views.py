@@ -301,9 +301,9 @@ class TagPostsView(ListView):
         return context
 
 
-class HomePagePostsView(ListView):
+class TimeLineView(ListView):
     model = Post
-    template_name = "index.html"
+    template_name = "timeline.html"
     context_object_name = "posts"
     paginate_by = 10
 

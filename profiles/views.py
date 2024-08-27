@@ -88,7 +88,7 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
 class RegisterView(CreateView):
     template_name = "register.html"
     form_class = RegisterForm
-    success_url = reverse_lazy("index")
+    success_url = reverse_lazy("timeline")
 
     def form_valid(self, form):
         form.save()
