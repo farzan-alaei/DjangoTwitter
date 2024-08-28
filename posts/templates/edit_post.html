@@ -45,8 +45,21 @@
                 <button class="btn btn-primary text-white p-3 m-3 rounded-lg bg-primary-700" type="submit">Edit
                 </button>
             </form>
+        <div class="flex flex-col items-center justify-end w-full mx-auto">
+                {% if request.user == post.author %}
+                <form class="space-y-4 md:space-y-6 w-3/4" action="{% url 'posts:delete_post' post.pk %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-primary text-white p-3 m-3 rounded-lg bg-red-800" type="submit"
+                            onclick="return confirm('Do you want to delete this post?');">Delete
+                    </button>
+                </form>
+                {% endif %}
+                </div>
+
         </div>
-    </div>
+        </div>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     {{ form.media.js }}
 

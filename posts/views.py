@@ -2,7 +2,14 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DetailView, View
+from django.views.generic import (
+    ListView,
+    CreateView,
+    UpdateView,
+    DetailView,
+    View,
+    DeleteView,
+)
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
@@ -379,3 +386,20 @@ class TagFollowListView(ListView):
 
     def get_queryset(self):
         return Tag.objects.filter(followers__user=self.request.user)
+
+
+class DeletePostView(LoginRequiredMixin, View):
+    """
+    View for deleting a post.
+    """
+
+    def post(self, request, pk, *args, **kwargs):
+        post = get_object_or_404(Post, pk=pk)
+
+        if request.user == post.author:
+            post.delete()
+            messages.success(request, "Your post was deleted successfully.")
+            return redirect("posts:user_posts")
+        else:
+            return redirect("posts:post_detail", pk=pk)
+
