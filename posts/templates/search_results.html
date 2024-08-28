@@ -12,7 +12,8 @@
                 <ul class="space-y-4">
                     {% for profile in profiles %}
                         <li class="p-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
-                            <a href="{% url 'profiles:other_profile' profile.id %}" class="text-primary-600 hover:text-primary-800 font-medium text-lg">
+                            <a href="{% url 'profiles:other_profile' profile.id %}"
+                               class="text-primary-600 hover:text-primary-800 font-medium text-lg">
                                 {{ profile.user.username }}
                             </a>
                         </li>
@@ -32,11 +33,13 @@
                         <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                             <!-- Image -->
                             {% if post.featured_image %}
-                                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-48 object-cover">
+                                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}"
+                                     class="w-full h-48 object-cover">
                             {% endif %}
                             <!-- Content -->
                             <div class="p-4">
-                                <a href="{% url 'posts:other_user_detail_post' post.id %}" class="text-primary-600 hover:text-primary-800 font-semibold text-lg">
+                                <a href="{% url 'posts:other_user_detail_post' post.id %}"
+                                   class="text-primary-600 hover:text-primary-800 font-semibold text-lg">
                                     {{ post.title }}
                                 </a>
                                 <p class="text-gray-600 mt-2">
@@ -58,7 +61,8 @@
                 <ul class="space-y-4">
                     {% for tag in tags %}
                         <li class="p-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
-                            <a href="{% url 'posts:tag_posts' tag.id %}" class="text-primary-600 hover:text-primary-800 font-medium text-lg">
+                            <a href="{% url 'posts:tag_posts' tag.id %}"
+                               class="text-primary-600 hover:text-primary-800 font-medium text-lg">
                                 {{ tag.name }}
                             </a>
                         </li>

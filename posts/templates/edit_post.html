@@ -10,8 +10,6 @@
             {% include 'component/messages.html' %}
             <h1 class="text-3xl text-primary-800">Edit post</h1>
             {{ form.media.css }}
-            
-
             <form class="space-y-4 md:space-y-6 w-3/4" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div>
@@ -44,13 +42,11 @@
                            for="image">Post Gallery</label>
                     <input type="file" name="image" multiple>
                 </div>
-                
                 <button class="btn btn-primary text-white p-3 m-3 rounded-lg bg-primary-700" type="submit">Edit
                 </button>
             </form>
         </div>
     </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     {{ form.media.js }}
 

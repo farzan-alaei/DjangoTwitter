@@ -32,7 +32,7 @@
                     <span class="ms-3">My Posts</span>
                 </a>
             </li>
-        <li>
+            <li>
                 <a href="{% url 'profiles:change_password' %}"
                    class="flex items-center p-1 text-gray-900 {% if request.resolver_match.url_name == 'change_password' %}bg-gray-200{% endif %}
                    rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -46,7 +46,7 @@
                     <span class="ms-3">Change Password</span>
                 </a>
             </li>
-        <li>
+            <li>
                 <a href="{% url 'profiles:follow_page' %}"
                    class="flex items-center p-1 text-gray-900 {% if request.resolver_match.url_name == 'follow_page' %}bg-gray-200{% endif %}
                    rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -60,7 +60,7 @@
                     <span class="ms-3">Followers & Following</span>
                 </a>
             </li>
-        <li>
+            <li>
                 <a href="{% url 'posts:tag_list' %}"
                    class="flex items-center p-1 text-gray-900 {% if request.resolver_match.url_name == 'tag_list' %}bg-gray-200{% endif %}
                    rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -74,7 +74,7 @@
                     <span class="ms-3">Tags Following</span>
                 </a>
             </li>
-            
+
         </ul>
     </div>
 </aside>

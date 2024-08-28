@@ -27,10 +27,9 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("posts/", include("posts.urls")),
     path("profiles/", include("profiles.urls")),
-    path('select2/', include('django_select2.urls')),
-    path("", TimeLineView.as_view(), name="timeline"),
+    path("select2/", include("django_select2.urls")),
+    path("", TimeLineView.as_view(), name="timeline"),  # Timeline is the home page of project
     path("search/", SearchView.as_view(), name="search"),
-
 ]
 
 if settings.DEBUG:

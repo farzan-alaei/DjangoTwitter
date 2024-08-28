@@ -11,7 +11,10 @@
             <textarea name="content" rows="1" placeholder="Reply to this comment..."
                       class="w-full p-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea>
             <input type="hidden" name="parent_id" value="{{ comment.id }}">
-            <button type="submit" name="comment" class="bg-primary-700 text-white mt-2 px-4 py-2 rounded-lg hover:bg-primary-600 transition duration-200">Reply</button>
+            <button type="submit" name="comment"
+                    class="bg-primary-700 text-white mt-2 px-4 py-2 rounded-lg hover:bg-primary-600 transition duration-200">
+                Reply
+            </button>
         </form>
     {% endif %}
 

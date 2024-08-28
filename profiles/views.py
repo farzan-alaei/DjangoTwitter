@@ -17,6 +17,9 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 class OtherProfileView(TemplateView):
+    """
+    View for other user profile.
+    """
     template_name = "other_profile.html"
     model = Profile
 
@@ -43,6 +46,9 @@ class OtherProfileView(TemplateView):
 
 
 class UserProfileView(LoginRequiredMixin, UpdateView):
+    """
+    View for user profile.
+    """
     model = Profile
     template_name = "profile.html"
     form_class = ProfileForm
@@ -61,6 +67,9 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
 
 
 class CustomLoginView(LoginView):
+    """
+    View for login.
+    """
     template_name = "login.html"
     redirect_authenticated_user = True
     form_class = LoginForm
@@ -70,11 +79,17 @@ class CustomLoginView(LoginView):
 
 
 class CustomLogoutView(LoginRequiredMixin, LogoutView):
+    """
+    View for logout.
+    """
     next_page = "profiles:user_profile"
     login_url = "profiles:login"
 
 
 class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
+    """
+    View for changing password.
+    """
     template_name = "change_password.html"
     login_url = "profiles:login"
     form_class = ChangePasswordForm
@@ -86,6 +101,9 @@ class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
 
 
 class RegisterView(CreateView):
+    """
+    View for registering new user.
+    """
     template_name = "register.html"
     form_class = RegisterForm
     success_url = reverse_lazy("timeline")
@@ -166,7 +184,6 @@ class FollowPageView(LoginRequiredMixin, ListView):
     """
 
     template_name = "follow_page.html"
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

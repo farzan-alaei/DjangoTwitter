@@ -16,6 +16,10 @@ from profiles.models import Profile
 
 
 class SearchView(ListView):
+    """
+    View for search
+    """
+
     template_name = "search_results.html"
     context_object_name = "search_results"
 
@@ -52,6 +56,10 @@ class SearchView(ListView):
 
 
 class UserPostListView(LoginRequiredMixin, ListView):
+    """
+    View for user posts
+    """
+
     model = Post
     template_name = "user_posts.html"
     context_object_name = "posts"
@@ -63,6 +71,10 @@ class UserPostListView(LoginRequiredMixin, ListView):
 
 
 class CreatePostView(LoginRequiredMixin, CreateView):
+    """
+    View for creating post
+    """
+
     model = Post
     template_name = "create_post.html"
     form_class = PostForm
@@ -80,6 +92,10 @@ class CreatePostView(LoginRequiredMixin, CreateView):
 
 
 class EditPostView(LoginRequiredMixin, UpdateView):
+    """
+    View for editing post
+    """
+
     model = Post
     template_name = "edit_post.html"
     form_class = PostForm
@@ -101,6 +117,10 @@ class EditPostView(LoginRequiredMixin, UpdateView):
 
 
 class UserDetailPostView(LoginRequiredMixin, DetailView):
+    """
+    View for user's post
+    """
+
     model = Post
     template_name = "user_detail_post.html"
     context_object_name = "post"
@@ -125,6 +145,9 @@ class UserDetailPostView(LoginRequiredMixin, DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
+        """
+        Add like or dislike and comment to post
+        """
         post = self.get_object()
         user = request.user
 
@@ -173,6 +196,10 @@ class UserDetailPostView(LoginRequiredMixin, DetailView):
 
 
 class OtherUserDetailPostView(DetailView):
+    """
+    View for other user's post
+    """
+
     model = Post
     template_name = "other_detail_post.html"
     context_object_name = "post"
@@ -198,6 +225,9 @@ class OtherUserDetailPostView(DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
+        """
+        Add like or dislike and comment to post
+        """
         post = self.get_object()
         user = request.user
 
@@ -280,6 +310,10 @@ class UnfollowTagView(LoginRequiredMixin, View):
 
 
 class TagPostsView(ListView):
+    """
+    View for displaying posts for a specific tag.
+    """
+
     model = Post
     template_name = "tag_posts.html"
     context_object_name = "posts"
@@ -302,6 +336,10 @@ class TagPostsView(ListView):
 
 
 class TimeLineView(ListView):
+    """
+    View for displaying the timeline.
+    """
+
     model = Post
     template_name = "timeline.html"
     context_object_name = "posts"
@@ -317,7 +355,11 @@ class TimeLineView(ListView):
             ).values_list("tag", flat=True)
             return (
                 Post.objects.filter(archived=False)
-                .filter(Q(author__in=followed_users) | Q(tags__in=followed_tags) | Q(author=self.request.user))
+                .filter(
+                    Q(author__in=followed_users)
+                    | Q(tags__in=followed_tags)
+                    | Q(author=self.request.user)
+                )
                 .distinct()
                 .order_by("-created_at")
             )
@@ -326,6 +368,10 @@ class TimeLineView(ListView):
 
 
 class TagFollowListView(ListView):
+    """
+    View for displaying the list of tags followed by the current user.
+    """
+
     model = Tag
     template_name = "tag_list.html"
     context_object_name = "tags"

@@ -13,7 +13,8 @@
             <ul class="space-y-4 w-full md:w-3/4">
                 {% for follower in followers %}
                     <li class="bg-white shadow-lg border-2 border-gray-200 rounded-lg p-6 dark:bg-gray-800 dark:text-white hover:shadow-xl transition-shadow duration-200 ease-in-out">
-                        <a class="text-lg font-medium hover:text-primary-600 dark:hover:text-primary-400" href="{% url 'profiles:other_profile' follower.follower.profile.id %}">
+                        <a class="text-lg font-medium hover:text-primary-600 dark:hover:text-primary-400"
+                           href="{% url 'profiles:other_profile' follower.follower.profile.id %}">
                             {{ follower.follower.username }}
                         </a>
                     </li>
@@ -26,7 +27,8 @@
             <ul class="space-y-4 w-full md:w-3/4">
                 {% for following in following %}
                     <li class="bg-white shadow-lg border-2 border-gray-200 rounded-lg p-6 dark:bg-gray-800 dark:text-white hover:shadow-xl transition-shadow duration-200 ease-in-out">
-                        <a class="text-lg font-medium hover:text-primary-600 dark:hover:text-primary-400" href="{% url 'profiles:other_profile' following.followed.profile.id %}">
+                        <a class="text-lg font-medium hover:text-primary-600 dark:hover:text-primary-400"
+                           href="{% url 'profiles:other_profile' following.followed.profile.id %}">
                             {{ following.followed.username }}
                         </a>
                     </li>
