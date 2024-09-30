@@ -2,3 +2,4 @@ Django==5.0.8
 pillow
 django-compressor
 django-select2
+django-debug-toolbar

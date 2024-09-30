@@ -30,6 +30,7 @@ urlpatterns = [
     path("select2/", include("django_select2.urls")),
     path("", TimeLineView.as_view(), name="timeline"),  # Timeline is the home page of project
     path("search/", SearchView.as_view(), name="search"),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 if settings.DEBUG:
